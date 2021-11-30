@@ -1,5 +1,10 @@
 -- util.lua
 
+
+signum = function(x) if x > 0 then return 1 else return -1 end end 
+
+
+
 reduce = function(array, operator)
 	
 	local rv = array[1]

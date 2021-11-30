@@ -44,13 +44,11 @@
 
 
 require 'rect'
-require 'line'
 require 'grid'
 require 'collision'
+require 'util'
 
 
-
-function signum(x) if x > 0 then return 1 else return -1 end end 
 
 
 -- entities can be spawned into rooms, and killed from rooms

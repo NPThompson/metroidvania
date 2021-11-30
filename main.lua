@@ -1,14 +1,10 @@
 -- main.lua
 
--- WHAT IS THIS?
--- N.P.Thompson 2021
+-- metroidvanian platformer game
+-- N.P.Thompson 2021 (MIT license)
 -- noahpthomp@gmail.com
 
 
-
--- TODO:
-
--- factor out viewports
 
 
 
@@ -24,7 +20,7 @@ require 'entity'
 --	  when an entity touches the border of a room, it is transferred to the adjacent room if it exists after testing collisions
 require 'room'
 
--- build a room from a string:
+-- build a room from strings like this:
 -- #######
 -- #.....#
 -- #.....#
@@ -139,13 +135,15 @@ love.load = function()
 ###...#.....#...#
 #######...#######
 ]]
-	room.connect_vertical(   game.rooms.r4, game.rooms.r2)
-	room.connect_vertical(   game.rooms.r3, game.rooms.r1)
 
-	room.connect_horizontal( game.rooms.r3, game.rooms.r4)
-	room.connect_horizontal( game.rooms.r1, game.rooms.r2)
+	-- connect the rooms in a nice graph
+	game.rooms.r4:connect_vertical( game.rooms.r2)
+	game.rooms.r3:connect_vertical( game.rooms.r1)
+
+	game.rooms.r3:connect_horizontal( game.rooms.r4)
+	game.rooms.r1:connect_horizontal( game.rooms.r2)
 	
-	room.connect_horizontal( game.rooms.r2, game.rooms.r3)
+	game.rooms.r2:connect_horizontal( game.rooms.r3)
 		
 	game.rooms.r1:spawn(viewports[1].target)
 
@@ -171,12 +169,6 @@ love.keypressed = function(key, scancode, isrepeat)
 			step = true 
 		end
 	end
-	
-	-- f3 for debug view
-	if key == "f3" then 
-		game.draw_hitboxes = not game.draw_hitboxes
-	end
-	
 end
 
 
