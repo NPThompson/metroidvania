@@ -59,6 +59,7 @@ game = {
 			love.graphics.rectangle("fill", -o.x, -o.y, r.tiles.size[1] * r.tile_size, r.tiles.size[2] * r.tile_size)
 			love.graphics.setColor(1,1,1)
 			
+			-- draw tiles
 			local tilepos = (vector.new(o) * -1)
 			for x = 0, r.tiles.size[1] do
 				for y = 0, r.tiles.size[2] do 
@@ -83,26 +84,26 @@ game = {
 	draw = function(center_room, origin)
 		local traversed   = {}
 		local to_draw     = { {room = center_room, translation = origin} }
-		local depth       = 5
+		local depth       = 3
+		local view_rect = {0,0,320,240}
 		
 			while depth > 0 and #to_draw > 0 do
-				depth = depth - 1
-				
 				for _, draw_it in pairs(to_draw) do 
 					-- draw all in queue
 					traversed[draw_it.room] = true
 					
 					-- add neighbors to next iteration
-					for _, door in pairs(draw_it.room.doors) do 
+					for dir, door in pairs(draw_it.room.doors) do 
 						if door.destination and not traversed[door.destination] then 
-							to_draw[#to_draw+1] = 
+						to_draw[#to_draw+1] = 
 								{
 									room        = door.destination,
-									translation = door.translation + origin
+									translation = door.translation + draw_it.translation -- origin
 								}
 						end
 					end
 				end			
+				depth = depth - 1			
 			end
 			
 			-- draw all in reverse order, so that the closest rooms appear over the furthest

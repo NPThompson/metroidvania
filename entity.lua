@@ -55,7 +55,7 @@ entity ={
 		{   actions  = {}
 		   ,velocity = vector.new{0,0} 
 		   ,position = vector.new{0,0} 
-		   ,hitbox   = {-6,-14, 6,16}
+		   ,hitbox   = {-8,-8,8,8}
 		   ,frame = { row = 0, col = 0 }
 		   ,grounded = {}
 		}
@@ -74,6 +74,7 @@ entity ={
 		  { acceleration = 1
 		   ,sprite       = "eliza"
 		   ,friction     = 0.3
+		   ,hitbox       = {-6,-10, 6,18}
 		   ,type         = "player"
 		   ,timers       = {jump = 10}
 		  }
