@@ -25,18 +25,6 @@ action=
 				end
 			end
 			
-			-- if love.keyboard.isDown(bindings.right) then
-				-- entity.velocity = entity.velocity + (space.right * entity.acceleration * frames)
-			-- end
-			-- if love.keyboard.isDown(bindings.up) then
-				-- entity.velocity = entity.velocity + (space.up * entity.acceleration * frames)
-			-- end
-			-- if love.keyboard.isDown(bindings.down) then
-				-- entity.velocity = entity.velocity + (space.down * entity.acceleration * frames)
-			-- end
-			-- if love.keyboard.isDown(bindings.left) then
-				-- entity.velocity = entity.velocity + (space.left * entity.acceleration * frames)
-			-- end
 			if (entity.grounded.below or entity.grounded.left) and love.keyboard.isDown(bindings.left)    then
 				entity.velocity = entity.velocity + (space.left * entity.acceleration * frames)
 			end

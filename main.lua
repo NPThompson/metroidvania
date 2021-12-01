@@ -30,6 +30,9 @@ require 'buildmap'
 
 -- the viewport determines what entity to track:
 --    everything else is drawn relative to the room that entity is in and the position of that entity in the room
+require 'view'
+
+
 
 -- updating the state of each entity is done once for every entity by iterating the list of entities
 --    and with respect to the number of elapsed frames
@@ -50,34 +53,6 @@ require 'sprite'
 
 
 
-_print_msg = ""
-
-printit = function(str)
-	_print_msg = _print_msg
-end
-
-
-
-windowsize = vector.new{640,480}
-
-viewports = { 
-	{ target = entity.player()
-	 ,canvas = love.graphics.newCanvas(320,240)
-	 ,area   = {vector.new{0,0}, windowsize}
-	}}
-	
-viewports[1].target:move(120,120)
-	
--- for crisp pixel scaling
-viewports[1].canvas:setFilter("nearest", "nearest")
-	
--- for debugging
--- press space to start	
-step   = false	
-dostep = false
-
-
-	
 love.load = function()
 	game.rooms.r1 = buildmap.room 
 [[
@@ -153,34 +128,24 @@ love.load = function()
 	game.rooms.r2:connect_horizontal( game.rooms.r5)
 	game.rooms.r5:connect_horizontal( game.rooms.r3)
 		
-	game.rooms.r1:spawn(viewports[1].target)
-
+    -- init graphics
 	sprite.eliza = sprite.load( "eliza.png", 6, 8)
 	sprite.blocks = sprite.load("tiles.png", 1, 1)
 	
-	love.window.setMode( windowsize"wh" )
+    view.init(640,480)
+   	
+    -- spawn player
+    p1 = entity.player()
+    p1:move(120,120)
+    
+    game.rooms.r1:spawn(p1)
+    view.set_target(p1)
+    
 end
 
 
 
-love.keypressed = function(key, scancode, isrepeat)
-	if key ==  "escape" then
-		if step then step = false 
-	else 
-		love.event.quit(0) end
-	end
-
-	-- space for frame-by-frame analysis
-	if key == "space" then 
-		if step then dostep = true 
-		else
-			step = true 
-		end
-	end
-end
-
-
-
+-- main loop
 love.update = function(dt)
 	
 	df.update(dt)
@@ -206,27 +171,33 @@ end
 
 
 
+-- for debugging
+-- press space to start	
+step   = false	
+dostep = false
+
+	
+
+love.keypressed = function(key, scancode, isrepeat)
+	if key ==  "escape" then
+		if step then step = false 
+	else 
+		love.event.quit(0) end
+	end
+
+	-- space for frame-by-frame analysis
+	if key == "space" then 
+		if step then dostep = true 
+		else
+			step = true 
+		end
+	end
+end
+
+
+
 love.draw = function()
-	-- draw what each viewport sees to its canvas
-	for _, viewport in pairs(viewports) do 
-		local target = viewport.target
-		if target then
-			love.graphics.setCanvas(viewport.canvas)
-			love.graphics.clear(0,0,0)
-				-- beginning in the room where the target is
-				game.draw( target.where
-						  -- and centered on the target
-						  ,target.position - viewport.area[2]/4)
-        end
-	end
-	
-	-- draw viewports to screen
-	love.graphics.setCanvas() -- set target to main window
-	love.graphics.setColor(1,1,1)
-	
-	for _, viewport in pairs(viewports) do
-		love.graphics.draw(viewport.canvas, 0,0, 0, 2,2)
-	end
+	view.draw() -- draw what each viewport sees to its canvas
 	
 	if step then love.graphics.print("space to step\n esc to resume", 0,0) end
 end

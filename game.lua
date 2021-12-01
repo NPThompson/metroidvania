@@ -52,7 +52,7 @@ game = {
 		end 
 	end,
 	
-	
+        
 	draw_room = function(r, o)
 			-- draw room background
 			love.graphics.setColor(0,0.06,0.1)
