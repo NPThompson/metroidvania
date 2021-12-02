@@ -20,12 +20,13 @@ require 'entity'
 --	  when an entity touches the border of a room, it is transferred to the adjacent room if it exists after testing collisions
 require 'room'
 
--- build a room from strings like this:
+-- build maps 
+-- build rooms from strings like this:
 -- #######
 -- #.....#
 -- #.....#
 -- #######
-require 'buildmap'
+require 'build'
 
 
 -- the viewport determines what entity to track:
@@ -54,84 +55,14 @@ require 'sprite'
 
 
 love.load = function()
-	game.rooms.r1 = buildmap.room 
-[[
-#######...##########
-#...................
-#...................
-#...................
-#.............#.....
-#.....#......#......
-#...........#.......
-#...................
-#...................
-#...................
-####################
-]]
-	game.rooms.r2 = buildmap.room 
-[[
-#######...###############################
-......##...#.............................
-...........#.............................
-.........##............................##
-.....###................................#
-.....#...........#######................#
-.....########....##.....##....######....#
-.......................................##
-......................................###
-.....................................####
-#########################################
-]]
-	game.rooms.r5 = buildmap.room
-[[
-##################
-..................
-..................
-##################
-]]
-	game.rooms.r3 = buildmap.room 
-[[
-####################
-...................#
-...................#
-#...###............#
-#.######............
-#.####..............
-#....#######........
-#.......####....####
-#........###.......#
-#..................#
-#######...##########
-]]
-	game.rooms.r4 = buildmap.room 
-[[
-#################
-#...............#
-#...............#
-#...########....#
-..#####.........#
-..#...........###
-..#..........####
-##..###.........#
-########........#
-#######.....#...#
-#######...#######
-]]
-
-	-- connect the rooms in a nice graph
-	game.rooms.r4:connect_vertical( game.rooms.r2)
-	game.rooms.r3:connect_vertical( game.rooms.r1)
-
-	game.rooms.r3:connect_horizontal( game.rooms.r4)
-	game.rooms.r1:connect_horizontal( game.rooms.r2)
-	
-	game.rooms.r2:connect_horizontal( game.rooms.r5)
-	game.rooms.r5:connect_horizontal( game.rooms.r3)
-		
+    -- builds a basic map for debugging
+    build.map(game.rooms)
+    
     -- init graphics
 	sprite.eliza = sprite.load( "eliza.png", 6, 8)
 	sprite.blocks = sprite.load("tiles.png", 1, 1)
-	
+    
+    love.window.setTitle("metroidvania")
     view.init(640,480)
    	
     -- spawn player
@@ -140,7 +71,6 @@ love.load = function()
     
     game.rooms.r1:spawn(p1)
     view.set_target(p1)
-    
 end
 
 

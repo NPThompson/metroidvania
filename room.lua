@@ -19,17 +19,24 @@
 
 --	TILES
 
--- tiles are considered static and unchanging unless affected
--- by collision with an entity (crumbled blocks getting 
--- destroyed by bullets, for example)
+-- the room has a tile grid from which it's appearence and 
+-- walls are derived. a wall is any tile exposed to open space.
 
--- almost all entities use tiles as walls to keep them in the
--- room. This is especially important if gravity is at play.
-
--- rectangles are used for collision detection.
--- large rectangles are generated wherever tiles are adjacent
--- these must be re-generated if a tile is destroyed
-
+-- walls are kept in a seperate collection from entities. while
+-- it would be simpler to treat walls as entities, there are a 
+-- few good reasons for this choice:
+--      tile v entity collision behavior is special:
+--          it needs to be done before other kinds of collisions.
+--          sliding often requires two tests to be done
+--      it is more efficient
+--          if walls were entities, they would be tested against
+--          each other, even if the test included a conditional
+--          like (ignore tile v tile), it's a quadratic increase
+--          in tests for every new tile.
+--      it lends itself to future optimization
+--          Walls can be merged together to form larger ones,
+--          reducing the number of tests. Such an optimization
+--          is not necessary now, but may become so in future.
 
 --	INTER-ROOM CONNECTIONS
 
