@@ -58,26 +58,26 @@ view = {
     draw_map = function(center_room, origin)
 		local traversed   = {}
 		local to_draw     = { {room = center_room, translation = origin} }
-		local depth       = 3
+		local rooms       = 10
 		local view_rect = {0,0,320,240}
 		
-			while depth > 0 and #to_draw > 0 do
+			while rooms > 0 and #to_draw > 0 do
 				for _, draw_it in pairs(to_draw) do 
 					-- draw all in queue
 					traversed[draw_it.room] = true
 					
 					-- add neighbors to next iteration
 					for dir, door in pairs(draw_it.room.doors) do 
-						if door.destination and not traversed[door.destination] then 
+						if door.destination and rooms > 0 then -- and not traversed[door.destination] then 
 						to_draw[#to_draw+1] = 
 								{
 									room        = door.destination,
 									translation = door.translation + draw_it.translation -- origin
 								}
+                                rooms = rooms -1
 						end
 					end
 				end			
-				depth = depth - 1			
 			end
 			
 			-- draw all in reverse order, so that the closest rooms appear over the furthest
