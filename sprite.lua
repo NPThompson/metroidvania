@@ -16,16 +16,30 @@ sprite= {
 		rv.w, rv.h = rv.image:getDimensions()
 		rv.framew, rv.frameh = rv.w/cols, rv.h/rows
 		
-		rv.draw = function(spr,r,c,x,y)
+		rv.draw = function(spr,r,c,x,y,flip)
 			spr.quad:setViewport(c * spr.framew
 								,r * spr.frameh
 								,spr.framew
 								,spr.frameh
 								,spr.w
 								,spr.h
-								) 
-			love.graphics.draw(spr.image, spr.quad, math.floor(x - (spr.framew/2)), math.floor(y - (spr.frameh/2)))
-		end
+								)
+            if flip then 
+                love.graphics.draw( spr.image
+                                   ,spr.quad
+                                   ,math.floor(x + (spr.framew/2))
+                                   ,math.floor(y - (spr.frameh/2))
+                                   ,0
+                                   ,-1 -- -1 x scale
+                                   ,1) -- 1  y scale
+            else 
+                love.graphics.draw( spr.image
+                                   ,spr.quad
+                                   ,math.floor(x - (spr.framew/2))
+                                   ,math.floor(y - (spr.frameh/2)))
+            end
+        
+        end
 		
 		return rv
 	end

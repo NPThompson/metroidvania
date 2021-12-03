@@ -59,13 +59,9 @@ view = {
 		local traversed   = {}
 		local to_draw     = { {room = center_room, translation = origin} }
 		local rooms       = 10
-		local view_rect = {0,0,320,240}
 		
 			while rooms > 0 and #to_draw > 0 do
 				for _, draw_it in pairs(to_draw) do 
-					-- draw all in queue
-					traversed[draw_it.room] = true
-					
 					-- add neighbors to next iteration
 					for dir, door in pairs(draw_it.room.doors) do 
 						if door.destination and rooms > 0 then -- and not traversed[door.destination] then 
@@ -122,9 +118,11 @@ view = {
 		love.graphics.setColor(1,1,1)
 		
 		if entity.sprite then 
-			sprite[entity.sprite]:draw(entity.frame.col or 0
-									  ,entity.frame.row or 0
-									  ,where"xy")
+			sprite[entity.sprite]:draw(entity.frame.row or 0
+									  ,entity.frame.col or 0
+									  ,where.x
+                                      ,where.y
+                                      ,entity.frame.flip)
 		end 
 	end
 }

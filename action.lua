@@ -45,5 +45,28 @@ action=
 			end
 		
 		end
-	end
+	end,
+    
+    animate_player = function(entity, frames)
+        -- flip
+        if entity.velocity.x > 0.1 then 
+            entity.frame.flip = false
+        end
+        if entity.velocity.x < -0.1 then 
+            entity.frame.flip = true
+        end
+        
+        -- jumping?
+        if math.abs(entity.velocity.y) > 2 then 
+            entity.frame.row = 1
+        else 
+            entity.frame.row = 0
+            if math.abs(entity.velocity.x) > 0.3 then
+                entity.frame.row = 2
+            end
+        
+        end
+        
+        
+    end
 }

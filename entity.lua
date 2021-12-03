@@ -81,7 +81,7 @@ entity ={
 
 		rv:add_action( action.translate )
 		rv:add_action( action.move_controls{ left = "left", up = "up", down = "down", right = "right"} )
-				
+        rv:add_action( action.animate_player)
 		return rv
 	end
 } -- end entity
