@@ -41,7 +41,7 @@ action=
 			end
 		
 			for f = 1,frames do 
-				entity.velocity.y = math.min(entity.velocity.y + 0.9, 4)
+				entity.velocity.y = min(entity.velocity.y + 0.9, 4)
 			end
 		
 		end
@@ -57,11 +57,11 @@ action=
         end
         
         -- jumping?
-        if math.abs(entity.velocity.y) > 2 then 
+        if abs(entity.velocity.y) > 2 then 
             entity.frame.row = 1
         else 
             entity.frame.row = 0
-            if math.abs(entity.velocity.x) > 0.3 then
+            if abs(entity.velocity.x) > 0.3 then
                 entity.frame.row = 2
             end
         

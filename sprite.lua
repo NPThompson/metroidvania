@@ -2,6 +2,10 @@
 
 
 
+require 'util'
+
+
+
 -- drawing coordinates too are centered 
 sprite= {
 	load = function(src, rows, cols)
@@ -27,16 +31,16 @@ sprite= {
             if flip then 
                 love.graphics.draw( spr.image
                                    ,spr.quad
-                                   ,math.floor(x + (spr.framew/2))
-                                   ,math.floor(y - (spr.frameh/2))
+                                   ,floor(x + (spr.framew/2))
+                                   ,floor(y - (spr.frameh/2))
                                    ,0
                                    ,-1 -- -1 x scale
-                                   ,1) -- 1  y scale
+                                   , 1)--  1 y scale
             else 
                 love.graphics.draw( spr.image
                                    ,spr.quad
-                                   ,math.floor(x - (spr.framew/2))
-                                   ,math.floor(y - (spr.frameh/2)))
+                                   ,floor(x - (spr.framew/2))
+                                   ,floor(y - (spr.frameh/2)))
             end
         
         end

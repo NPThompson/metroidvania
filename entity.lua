@@ -28,7 +28,7 @@ entity ={
 			act(e,df)
 		end
 		if e.timers then for k,v in pairs(e.timers) do
-			e.timers[k] = math.max(e.timers[k] - df,0)
+			e.timers[k] = max(e.timers[k] - df,0)
 			end
 		end
 	end,

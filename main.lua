@@ -15,9 +15,9 @@
 require 'entity'
 
 -- the state consists of a graph of rooms and a collection of entities:
---	  entities reference the room they are in and vice-versa
---	  entities can only be in one room at a time
---	  when an entity touches the border of a room, it is transferred to the adjacent room if it exists after testing collisions
+--    entities reference the room they are in and vice-versa
+--    entities can only be in one room at a time
+--    when an entity touches the border of a room, it is transferred to the adjacent room if it exists after testing collisions
 require 'room'
 
 -- build maps 
@@ -59,12 +59,12 @@ love.load = function()
     build.map(game.rooms)
     
     -- init graphics
-	sprite.eliza = sprite.load( "eliza.png", 6, 8)
-	sprite.blocks = sprite.load("tiles.png", 1, 1)
+    sprite.eliza  = sprite.load( "eliza.png", 6, 8)
+    sprite.blocks = sprite.load( "tiles.png", 1, 1)
     
     love.window.setTitle("metroidvania")
     view.init(640,480)
-   	
+    
     -- spawn player
     p1 = entity.player()
     p1:move(120,120)
@@ -77,57 +77,57 @@ end
 
 -- main loop
 love.update = function(dt)
-	
-	df.update(dt)
-	
-	
-	if not step then 
-		frames = df.get()
-	else if dostep then  
-			frames = 1
-			dostep = false
-		else frames = 0
-		end
-	end
-	
-	
-	if frames > 0 then 
-		game.update(frames)
-	    game.test_collisions()
-	end
-	
-	df.reset()
+    
+    df.update(dt)
+    
+    -- for running frame-by-frame
+    if not step then 
+        frames = df.get()
+    else if dostep then  
+            frames = 1
+            dostep = false
+        else frames = 0
+        end
+    end
+    
+    
+    if frames > 0 then 
+        game.update(frames)
+        game.test_collisions()
+    end
+    
+    df.reset()
 end
 
 
 
 -- for debugging
--- press space to start	
-step   = false	
+-- press space to start 
+step   = false  
 dostep = false
 
-	
+    
 
 love.keypressed = function(key, scancode, isrepeat)
-	if key ==  "escape" then
-		if step then step = false 
-	else 
-		love.event.quit(0) end
-	end
+    if key ==  "escape" then
+        if step then step = false 
+    else 
+        love.event.quit(0) end
+    end
 
-	-- space for frame-by-frame analysis
-	if key == "space" then 
-		if step then dostep = true 
-		else
-			step = true 
-		end
-	end
+    -- space for frame-by-frame analysis
+    if key == "space" then 
+        if step then dostep = true 
+        else
+            step = true 
+        end
+    end
 end
 
 
 
 love.draw = function()
-	view.draw() -- draw what each viewport sees to its canvas
-	
-	if step then love.graphics.print("space to step\n esc to resume", 0,0) end
+    view.draw() -- draw what each viewport sees to its canvas
+    
+    if step then love.graphics.print("space to step\n esc to resume", 0,0) end
 end

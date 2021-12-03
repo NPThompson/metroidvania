@@ -23,10 +23,10 @@ rect =
 			local r,s = Ax1,Ay1
 			return rect.overlap( r[1], r[2], r[3], r[4], s[1], s[2], s[3], s[4])
 		else
-			return math.max(Ax1,Bx1)
-				  ,math.max(Ay1,By1)
-				  ,math.min(Ax2,Bx2)
-				  ,math.min(Ay2,By2)
+			return max(Ax1,Bx1)
+				  ,max(Ay1,By1)
+				  ,min(Ax2,Bx2)
+				  ,min(Ay2,By2)
 		end
 	end,
 	
@@ -42,10 +42,10 @@ rect =
 	end,
 	
 	union = function(r, s)
-		return math.min(r[1],s[1])	
-			  ,math.min(r[2],s[2])
-			  ,math.max(r[3],s[3])
-			  ,math.max(r[4],s[4])
+		return min(r[1],s[1])	
+			  ,min(r[2],s[2])
+			  ,max(r[3],s[3])
+			  ,max(r[4],s[4])
 	end,
 	
 	merge = function(r, s)

@@ -2,6 +2,11 @@
 
 
 signum = function(x) if x > 0 then return 1 else return -1 end end 
+max    = math.max
+min    = math.min
+abs    = math.abs
+floor  = math.floor
+ceil   = math.ceil
 
 
 
