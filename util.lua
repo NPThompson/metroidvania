@@ -6,12 +6,22 @@
 
 
 
-signum = function(x) if x > 0 then return 1 else return -1 end end 
-max    = math.max
-min    = math.min
-abs    = math.abs
-floor  = math.floor
-ceil   = math.ceil
+max      = math.max
+min      = math.min
+abs      = math.abs
+floor    = math.floor
+ceil     = math.ceil
+
+signum   = function(x) 
+    if x > 0 
+        then return  1 
+        else return -1 
+    end 
+end
+ 
+quotient = function(x,y)
+    return floor(x/y), x % y
+end
 
 
 

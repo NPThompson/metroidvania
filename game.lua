@@ -1,9 +1,9 @@
 -- game.lua
 
 
--- metroidvanian game
+-- metroidvanian platformer game
 -- N.P.Thompson 2021 (MIT license)
-
+-- noahpthomp@gmail.com
 
 
 
