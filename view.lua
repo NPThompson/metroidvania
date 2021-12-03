@@ -56,73 +56,73 @@ view = {
 
     
     draw_map = function(center_room, origin)
-		local traversed   = {}
-		local to_draw     = { {room = center_room, translation = origin} }
-		local rooms       = 10
-		
-			while rooms > 0 and #to_draw > 0 do
-				for _, draw_it in pairs(to_draw) do 
-					-- add neighbors to next iteration
-					for dir, door in pairs(draw_it.room.doors) do 
-						if door.destination and rooms > 0 then -- and not traversed[door.destination] then 
-						to_draw[#to_draw+1] = 
-								{
-									room        = door.destination,
-									translation = door.translation + draw_it.translation -- origin
-								}
+        local traversed   = {}
+        local to_draw     = { {room = center_room, translation = origin} }
+        local rooms       = 10
+        
+            while rooms > 0 and #to_draw > 0 do
+                for _, draw_it in pairs(to_draw) do 
+                    -- add neighbors to next iteration
+                    for dir, door in pairs(draw_it.room.doors) do 
+                        if door.destination and rooms > 0 then -- and not traversed[door.destination] then 
+                        to_draw[#to_draw+1] = 
+                                {
+                                    room        = door.destination,
+                                    translation = door.translation + draw_it.translation -- origin
+                                }
                                 rooms = rooms -1
-						end
-					end
-				end			
-			end
-			
-			-- draw all in reverse order, so that the closest rooms appear over the furthest
-			local i = #to_draw
-			while i > 0 do  
-				view.draw_room(to_draw[i].room, to_draw[i].translation)
-				i = i - 1
-			end			
-	end,
+                        end
+                    end
+                end         
+            end
+            
+            -- draw all in reverse order, so that the closest rooms appear over the furthest
+            local i = #to_draw
+            while i > 0 do  
+                view.draw_room(to_draw[i].room, to_draw[i].translation)
+                i = i - 1
+            end         
+    end,
 
 
     
     draw_room = function(r, o)
-			-- draw room background
-			love.graphics.setColor(0,0.06,0.1)
-			love.graphics.rectangle("fill", -o.x, -o.y, r.tiles.size[1] * r.tile_size, r.tiles.size[2] * r.tile_size)
-			love.graphics.setColor(1,1,1)
-			
-			-- draw tiles
-			local tilepos = (vector.new(o) * -1)
-			for x = 0, r.tiles.size[1] do
-				for y = 0, r.tiles.size[2] do 
-					if r.tiles(x,y) ~= r.tiles.default then 
-						sprite.blocks:draw(0,0, (tilepos - vector.new{1,1} * (r.tile_size/2))"xy")	
-					end
-				tilepos.y = tilepos.y + r.tile_size
-				end
-			tilepos.x = tilepos.x + r.tile_size
-			tilepos.y = -o.y
-			end
-			
-			-- draw entities
-			for e in elems(r.entities) do 
-				view.draw_entity(e, e.position - o)
-			end
-	
-	end,
+            -- draw room background
+            love.graphics.setColor(0,0.06,0.1)
+            love.graphics.rectangle("fill", -o.x, -o.y, r.tiles.size[1] * r.tile_size, r.tiles.size[2] * r.tile_size)
+            love.graphics.setColor(1,1,1)
+            
+            -- draw tiles
+            local tilepos = (vector.new(o) * -1)
+            for x = 0, r.tiles.size[1] do
+                for y = 0, r.tiles.size[2] do 
+                    if r.tiles(x,y) ~= r.tiles.default then 
+                        sprite.blocks:draw(0,0, (tilepos - vector.new{1,1} * (r.tile_size/2))"xy")  
+                    end
+                tilepos.y = tilepos.y + r.tile_size
+                end
+            tilepos.x = tilepos.x + r.tile_size
+            tilepos.y = -o.y
+            end
+            
+            -- draw entities
+            for e in elems(r.entities) do 
+                view.draw_entity(e, e.position - o)
+            end
+    
+    end,
 
 
     
-    draw_entity = function(entity, where)		
-		love.graphics.setColor(1,1,1)
-		
-		if entity.sprite then 
-			sprite[entity.sprite]:draw(entity.frame.row or 0
-									  ,entity.frame.col or 0
-									  ,where.x
+    draw_entity = function(entity, where)       
+        love.graphics.setColor(1,1,1)
+        
+        if entity.sprite then 
+            sprite[entity.sprite]:draw(entity.frame.row or 0
+                                      ,entity.frame.col or 0
+                                      ,where.x
                                       ,where.y
                                       ,entity.frame.flip)
-		end 
-	end
+        end 
+    end
 }

@@ -1,5 +1,9 @@
 -- room.lua
 
+-- metroidvanian platformer game
+-- N.P.Thompson 2021 (MIT license)
+-- noahpthomp@gmail.com
+
 
 
 -- rooms are, perhaps, the most vital part of this kludge,
@@ -9,7 +13,7 @@
 
 -- the most important aspect of rooms is collision detection.
 -- nothing can collide with another thing except it occupy a
--- shared space, and rooms are that space.
+-- shared space, and rooms are that unit.
 
 -- rooms know of two kinds of 'things' that can collide:
 --  entities
@@ -20,7 +24,7 @@
 --  TILES
 
 -- the room has a tile grid from which it's appearence and 
--- walls are derived. a wall is any tile exposed to open space.
+-- walls are derived. a wall is any tile exposed to open unit.
 
 -- walls are kept in a seperate collection from entities. while
 -- it would be simpler to treat walls as entities, there are a 

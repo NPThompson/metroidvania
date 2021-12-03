@@ -41,12 +41,9 @@ require 'view'
 --    by iterating the list of rooms (not by following the graph)
 require 'game'
 
--- converts elapsed time into standard-length slices of time called frames
--- each frame equal to 1/60 a second
--- update passes the number of frames along to the entity update method and its actions
--- collision testing ignores the number of elapsed frames
-require 'df'
-
+-- defines units of space and time 
+-- and a procedure for computing elapsed frames (unit.delta_frames(dt))
+require 'unit'
 
 -- sprites support drawing specific subimages (called frames) from a large image (the sprite)
 -- entities do not reference sprites directly, instead using a string 
@@ -77,50 +74,20 @@ end
 
 -- main loop
 love.update = function(dt)
-    
-    df.update(dt)
-    
-    -- for running frame-by-frame
-    if not step then 
-        frames = df.get()
-    else if dostep then  
-            frames = 1
-            dostep = false
-        else frames = 0
-        end
-    end
-    
+    local frames = unit.delta_frames(dt)
     
     if frames > 0 then 
         game.update(frames)
         game.test_collisions()
     end
-    
-    df.reset()
 end
 
-
-
--- for debugging
--- press space to start 
-step   = false  
-dostep = false
 
     
 
 love.keypressed = function(key, scancode, isrepeat)
     if key ==  "escape" then
-        if step then step = false 
-    else 
-        love.event.quit(0) end
-    end
-
-    -- space for frame-by-frame analysis
-    if key == "space" then 
-        if step then dostep = true 
-        else
-            step = true 
-        end
+        love.event.quit(0) 
     end
 end
 
@@ -128,6 +95,4 @@ end
 
 love.draw = function()
     view.draw() -- draw what each viewport sees to its canvas
-    
-    if step then love.graphics.print("space to step\n esc to resume", 0,0) end
 end
