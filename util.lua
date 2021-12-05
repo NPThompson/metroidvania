@@ -23,8 +23,6 @@ quotient = function(x,y)
     return floor(x/y), x % y
 end
 
-
-
 reduce = function(array, operator)
     
     local rv = array[1]

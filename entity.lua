@@ -15,13 +15,12 @@ require"rect"
 
 
 entity ={
-    -- moves position and hitbox of an entity
+    -- moves position and hitboxes of an entity
     move = function(e, dx, dy)
         e.position  = e.position  + {dx,dy}
-        e.hitbox[1] = e.hitbox[1] + dx  
-        e.hitbox[2] = e.hitbox[2] + dy  
-        e.hitbox[3] = e.hitbox[3] + dx  
-        e.hitbox[4] = e.hitbox[4] + dy  
+        if e.collider then 
+            e.collider:move(dx,dy)
+        end
     end,
     
     -- performs all the actions in e's list of actions 
@@ -59,7 +58,6 @@ entity ={
         {   actions  = {}
            ,velocity = vector.new{0,0} 
            ,position = vector.new{0,0} 
-           ,hitbox   = {-8,-8,8,8}
            ,frame = { row = 0, col = 0 }
            ,grounded = {}
         }
@@ -78,10 +76,10 @@ entity ={
           { acceleration = 1
            ,sprite       = "eliza"
            ,friction     = 0.3
-           ,hitbox       = {-6,-10, 6,18}
            ,type         = "player"
            ,timers       = {jump = 10}
           }
+        rv.collider = collider.new(rv, rect.new{-6,-10, 6,18})
 
         rv:add_action( action.translate )
         rv:add_action( action.move_controls{ left = "left", up = "up", down = "down", right = "right"} )

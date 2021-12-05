@@ -41,6 +41,10 @@
 --          Walls can be merged together to form larger ones,
 --          reducing the number of tests. Such an optimization
 --          is not necessary now, but may become so in future.
+--      and of course, last but by no means least:
+--          it works right now and I don't want to mess with it.
+
+
 
 --  INTER-ROOM CONNECTIONS
 
@@ -56,7 +60,7 @@
 
 require 'rect'
 require 'grid'
-require 'collision'
+require 'collider'
 require 'util'
 
 
@@ -106,10 +110,10 @@ room ={
     end,
 
     out_of_bounds = function(r,e)
-        if e.hitbox[1] < 0          then return "left"  end
-        if e.hitbox[2] < 0          then return "up"    end
-        if e.hitbox[3] > r.size[1]  then return "right" end
-        if e.hitbox[4] > r.size[2]  then return "down"  end
+        if e.collider.hitbox[1] < 0          then return "left"  end
+        if e.collider.hitbox[2] < 0          then return "up"    end
+        if e.collider.hitbox[3] > r.size[1]  then return "right" end
+        if e.collider.hitbox[4] > r.size[2]  then return "down"  end
     end,
 
     -- calculates hitboxes of tiles in room 
@@ -194,7 +198,7 @@ room ={
     tile_collisions = function(r,e)
         local cols = {}
         for _, w in pairs(r.walls) do 
-            local overlap = {rect.overlap(w,e.hitbox)}
+            local overlap = rect.overlap(w,e.collider.hitbox)
             if rect.valid(overlap[1], overlap[2], overlap[3], overlap[4]) then 
                 cols[#cols+1] = 
                 { 
@@ -280,11 +284,8 @@ room ={
     end,
 
     _collide = function(e1, e2)
-        -- if touching, make both aware of the other's presence
-        local x,y = hitbox.overlap(e1.hitbox, e2.hitbox, e2.position - e1.position) 
-        if x > 0.0001 and y > 0.0001 then
-            e1.touching[#e1.touching + 1] = e2
-            e2.touching[#e2.touching + 1] = e1
+        if e1.collider and e2.collider then     
+            e1.collider:test(e2.collider)
         end
     end
 }-- end room
