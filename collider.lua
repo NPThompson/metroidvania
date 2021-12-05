@@ -9,6 +9,18 @@
 require 'util'
 
 
+
+-- TODO:
+-- add support for multiple hitboxes, arbitrarily associated with classes and reactions
+--      syntax would look something like:
+--           collider:rule( bounce,    hitbox_small, 'wall')
+--           collider:rule( gravitate, radius_large, 'wall')
+--      These two rules would cause a collider to be attracted to walls but bounce off
+--      of them. Because the two rules have different hitboxes, the gravitation can act
+--      on the entity for some time until it is close enough to bounce.
+
+
+
 -- a collider is fairly simple:
 -- it has one hitbox and a number of rules for whenever it 
 -- touches another collider of a given class. 
@@ -23,7 +35,7 @@ collider =
         rv.entity = owner
         rv.hitbox = hitbox
         -- source of rules: maps class to reaction
-        rv.react = {}
+        rv.reactions = {}
         -- defines what classes the collider is a member of
         -- we assume every collider belongs to an entity
         rv.is_a  = {entity=true}
@@ -41,70 +53,25 @@ collider =
         c.hitbox:move(dx,dy)
     end,
 
-    rule = function(c, reaction, ...)
-        c.reactions[type_flag] = reaction
+    rule = function(c, reaction, type_flag)
+        c.reactions[type_flag] = {reaction}
     end,
     
     -- tests two colliders against each other
     test = function( a, b )
         local overlap = rect.overlap(a.hitbox, b.hitbox) 
         if rect.valid(overlap) then 
-            a.react(b, overlap)
-            b.react(a, overlap)
+            a:react(b, overlap)
+            b:react(a, overlap)
         end
     end,
     
     -- reacts one collider against another 
     react = function( a, b, overlap )
         for type_flag, _ in pairs(b.is_a) do 
-            for _, react in pairs(a.reactions[type_flag]) do
-                react(a.owner, type_flag, overlap )
+            for _, react in pairs(a.reactions[type_flag] or {}) do
+                react(a.entity, b.entity, type_flag, overlap )
             end
         end
     end
 } collider.__index = collider
-
-
-
-move_and_ground_entity = function(e,dx,dy)
-    e:move(dx,dy)
-    if dx ~= 0 then e.velocity.x = 0 end
-    if dy ~= 0 then e.velocity.y = 0 end
-    if dy < 0 then e.grounded.below = true end
-    if dx < 0 then e.grounded.right = true end
-    if dx > 0 then e.grounded.left = true end
-end
-
-greater_collision_area = function(c1,c2)
-    if c1.overlap[1] * c1.overlap[2] > c2.overlap[1] * c2.overlap[2] then 
-        return c1 
-    else 
-        return c2 
-    end
-end
-
-resolve_collision = function(e, collision)
-    local dx,dy = collision.overlap[1], collision.overlap[2]
-    
-    if dx > dy then 
-        dx = 0 
-    else 
-        dy = 0
-    end
-    
-    if math.abs(e.velocity.x) > 0.05 then 
-        dx = dx * -signum(e.velocity.x)
-    else
-        dx = dx *  signum(e.position.x - collision.x)
-    end
-    
-    if math.abs(e.velocity.y) > 0.05 then 
-        dy = dy * -signum(e.velocity.y)
-    else
-        dy = dy *  signum(e.position.y - collision.y)
-    end
-    
-    move_and_ground_entity(e, dx,dy)
-end
-
-

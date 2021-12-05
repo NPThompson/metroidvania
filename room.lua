@@ -6,6 +6,20 @@
 
 
 
+-- TODO
+-- 'wall' entity will replace tiles 
+-- (as soon as collider supports multiple hitboxes)
+--      instead of handling tiles as a special case, a 'wall' 
+--      entity will be constructed. this entity will have 
+--      a collider with multiple hitboxes. Tile sliding 
+--      behavior will be moved into a reaction 'slide',
+--      the second test will be performed by the moving
+--      entity if necessary by calling collider.test() again.
+--      Like the previous solution, redundant collisions will
+--      be prevented, but the code will be much cleaner.
+
+
+
 -- rooms are, perhaps, the most vital part of this kludge,
 -- the succulent meatball at the center of this spaghetti,
 -- tangled in the starchy threads of several interdependent
@@ -117,6 +131,8 @@ room ={
     end,
 
     -- calculates hitboxes of tiles in room 
+    -- in future, will be the constructor of a 'walls' entity
+    -- with a multi-hitbox collider, derived from the tiles 
     calculate_walls = function(r)
         -- we'll compute rectangles by looking at edges first
         -- that is, tiles with at least one empty neighbor

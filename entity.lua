@@ -6,6 +6,8 @@
 
 
 
+require 'react'
+
 require"vector"
 -- actions are performed every frame by entities
 require"action"
@@ -15,6 +17,47 @@ require"rect"
 
 
 entity ={
+    player = function()
+        local rv = entity.new 
+          { acceleration = 1
+           ,sprite       = "eliza"
+           ,friction     = 0.3
+           ,type         = "player"
+           ,timers       = {jump = 10}
+          }
+        rv.collider = collider.new(rv, rect.new{-6,-10, 6,18})
+
+        rv:add_action( action.translate )
+        rv:add_action( action.move_controls{ left = "left", up = "up", down = "down", right = "right"} )
+        rv:add_action( action.animate_player)
+        return rv
+    end,
+    
+    coin = function()
+        local rv = entity.new{ sprite = "coin" }
+        rv.collider = collider.new(rv, rect.new{-6,-6,6,6})
+        rv.collider:rule( react.kill, 'entity')
+        return rv
+    end,
+
+    -- builds an entity
+    new = function(args)
+        local rv =
+        {   actions  = {}
+           ,velocity = vector.new{0,0} 
+           ,position = vector.new{0,0} 
+           ,frame = { row = 0, col = 0 }
+           ,grounded = {}
+        }
+        
+        for k,v in pairs(args) do 
+            rv[k] = v
+        end
+
+        setmetatable(rv,entity)
+        return rv
+    end,
+
     -- moves position and hitboxes of an entity
     move = function(e, dx, dy)
         e.position  = e.position  + {dx,dy}
@@ -50,41 +93,6 @@ entity ={
             end
         end
         return this
-    end,
-
-    -- builds an entity
-    new = function(args)
-        local rv =
-        {   actions  = {}
-           ,velocity = vector.new{0,0} 
-           ,position = vector.new{0,0} 
-           ,frame = { row = 0, col = 0 }
-           ,grounded = {}
-        }
-        
-        for k,v in pairs(args) do 
-            rv[k] = v
-        end
-
-        setmetatable(rv,entity)
-        return rv
-    end,
-
-
-    player = function()
-        local rv = entity.new 
-          { acceleration = 1
-           ,sprite       = "eliza"
-           ,friction     = 0.3
-           ,type         = "player"
-           ,timers       = {jump = 10}
-          }
-        rv.collider = collider.new(rv, rect.new{-6,-10, 6,18})
-
-        rv:add_action( action.translate )
-        rv:add_action( action.move_controls{ left = "left", up = "up", down = "down", right = "right"} )
-        rv:add_action( action.animate_player)
-        return rv
     end
 } -- end entity
 entity.__index = entity

@@ -58,6 +58,7 @@ love.load = function()
     -- init graphics
     sprite.eliza  = sprite.load( "eliza.png", 6, 8)
     sprite.blocks = sprite.load( "tiles.png", 1, 1)
+    sprite.coin   = sprite.load( "coin.png",  1, 1)
     
     love.window.setTitle("metroidvania")
     view.init(640,480)
