@@ -63,13 +63,16 @@ love.load = function()
     love.window.setTitle("metroidvania")
     view.init(640,480)
     
+    -- init audio
+    sound.coin = love.audio.newSource('coin.wav', 'static')
+
     -- spawn player
     p1 = entity.player()
     p1:move(120,120)
     
     game.rooms.r1:spawn(p1)
     view.set_target(p1)
-end
+ end
 
 
 

@@ -11,11 +11,16 @@
 
 
 
+require 'sound'
+
+
+
 react =
 {
     -- removes from existence
     kill = function(this)
         this.where:kill(this)
+        sound.play('coin', 0.05)
     end
 }
 
