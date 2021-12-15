@@ -6,19 +6,6 @@
 
 
 
--- TODO
--- 'wall' entity will replace tiles 
--- (as soon as collider supports multiple hitboxes)
---      instead of handling tiles as a special case, a 'wall' 
---      entity will be constructed. this entity will have 
---      a collider with multiple hitboxes. Tile sliding 
---      behavior will be moved into a reaction 'slide',
---      the second test will be performed by the moving
---      entity if necessary by calling collider.test() again.
---      Like the previous solution, redundant collisions will
---      be prevented, but the code will be much cleaner.
-
-
 
 -- rooms are, perhaps, the most vital part of this kludge,
 -- the succulent meatball at the center of this spaghetti,
@@ -72,9 +59,9 @@
 
 
 
-require 'rect'
+require 'entity'
+require 'hitbox'
 require 'grid'
-require 'collider'
 require 'util'
 
 
@@ -124,10 +111,10 @@ room ={
     end,
 
     out_of_bounds = function(r,e)
-        if e.collider.hitbox[1] < 0          then return "left"  end
-        if e.collider.hitbox[2] < 0          then return "up"    end
-        if e.collider.hitbox[3] > r.size[1]  then return "right" end
-        if e.collider.hitbox[4] > r.size[2]  then return "down"  end
+        if e.hitbox.rect[1] < 0          then return "left"  end
+        if e.hitbox.rect[2] < 0          then return "up"    end
+        if e.hitbox.rect[3] > r.size[1]  then return "right" end
+        if e.hitbox.rect[4] > r.size[2]  then return "down"  end
     end,
 
     -- calculates hitboxes of tiles in room 
@@ -188,68 +175,32 @@ room ={
             
             -- add a rectangle
             r.walls[#r.walls+1] = 
-            {
-                (e.x-1) *16
-               ,(e.y-1) *16
-               , e.x    *16
-               , e.y    *16
-               , dn = e.dn
-               , rt = e.rt
-               , lf = e.lf
-               , up = e.up
-            }
-            r.tiles:set( e.x, e.y, 
-                { rect = r.walls[#r.walls]}
-                )
-
+                entity.wall( hitbox.rect{ (e.x-1) *16
+                                         ,(e.y-1) *16
+                                         , e.x    *16
+                                         , e.y    *16 })
         end     
 
-    end,
-
-    -- returns an array of collisions
-    -- each collision is a table with these fields:
-    -- x,y     -- the center of the tile 
-    -- overlap -- an array with two elements: the x and y overlap
-    -- wall    -- a reference to the offending tile's wall
-    tile_collisions = function(r,e)
-        local cols = {}
-        for _, w in pairs(r.walls) do 
-            local overlap = rect.overlap(w,e.collider.hitbox)
-            if rect.valid(overlap[1], overlap[2], overlap[3], overlap[4]) then 
-                cols[#cols+1] = 
-                { 
-                     x= (w[1]+w[3])/2
-                    ,y= (w[2]+w[4])/2
-                    ,overlap= { overlap[3]-overlap[1]
-                               ,overlap[4]-overlap[2]
-                               },
-                    wall = w
-                }
-            end
-        end
-        return cols
     end,
     
     test_collisions = function(r)
         -- wall collision detection
+      
         for e in elems(r.entities) do
-            local cols = r:tile_collisions(e)
-            if #cols > 0 then 
-                resolve_collision( e, 
-                                   reduce( cols, greater_collision_area )) -- find collision with largest area
-
-                -- repeat once: likely that after correcting the X or Y dimension,
-                -- the entity may be touching another tile
-                cols = r:tile_collisions(e)
-                if #cols > 0 then 
-                    resolve_collision( e, 
-                                       reduce( cols, greater_collision_area )) -- find collision with largest area
-                    end
-            end
-        end -- end for entities
+            for _, w in pairs(r.walls) do 
+                local col = e:collision(w)
+                if col then 
+                    e:append_collision(col, w) 
+                end 
+            end 
+            e:process_collisions()
+        end 
         
         -- inter-entity collision detection
-        r.entities:handshake(room._collide)
+        r.entities:handshake( room.collide_entities )
+        for e in elems(r.entities) do
+            e:process_collisions()
+        end
         
         -- room transfer test           
         for e in elems(r.entities) do
@@ -261,6 +212,14 @@ room ={
             end
         end -- end for
     end, -- end function
+    
+    collide_entities = function(e1, e2)
+        local col = e1:collision(e2)
+        if col then 
+            e1:append_collision(col, e2)
+            e2:append_collision(col, e1) 
+        end
+    end,
     
     -- functions for connecting rooms together
     -- by default, the top of the rooms are considered even with each other (y=0)
@@ -297,12 +256,8 @@ room ={
             destination = down,
             translation = vector.new{ -h, -up.size.h }
         }
-    end,
-
-    _collide = function(e1, e2)
-        if e1.collider and e2.collider then     
-            e1.collider:test(e2.collider)
-        end
     end
+
+
 }-- end room
 room.__index = room

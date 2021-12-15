@@ -53,12 +53,8 @@ rect =
         end
     end,
         
-    area = function(x1,y1,x2,y2)
-        if not y1 then 
-            return rect.area(x1[1], x1[2], x1[3], x1[4])
-        else 
-            return (x2-x1) * (y2-y1)
-        end
+    area = function(r)
+        return (r[3]-r[1]) * (r[4] - r[2])
     end,
         
     union = function(r, s)
