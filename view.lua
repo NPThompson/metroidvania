@@ -107,22 +107,11 @@ view = {
             
             -- draw entities
             for e in elems(r.entities) do 
-                view.draw_entity(e, e.position - o)
+                if e.draw then 
+                    e.draw(e, e.position - o)
+                end 
+                   
             end
     
-    end,
-
-
-    
-    draw_entity = function(entity, where)       
-        love.graphics.setColor(1,1,1)
-        
-        if entity.sprite then 
-            sprite[entity.sprite]:draw(entity.frame.row or 0
-                                      ,entity.frame.col or 0
-                                      ,where.x
-                                      ,where.y
-                                      ,entity.frame.flip)
-        end 
     end
 }

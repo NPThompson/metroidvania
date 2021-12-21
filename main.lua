@@ -56,7 +56,7 @@ love.load = function()
     build.map(game.rooms)
     
     -- init graphics
-    sprite.eliza  = sprite.load( "eliza.png", 6, 8)
+    sprite.cybot  = sprite.load( "cybot.png", 6, 8)
     sprite.blocks = sprite.load( "tiles.png", 1, 1)
     sprite.coin   = sprite.load( "coin.png",  1, 1)
     

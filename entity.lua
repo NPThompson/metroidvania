@@ -24,7 +24,7 @@ require"rect"
 
 entity ={
     -- constructors defined in other files 
-    player = entity_player,
+    player = player.new,
 
     wall = function(hbox)
         local rv = { hitbox = hbox }
