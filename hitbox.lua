@@ -3,7 +3,6 @@
 
 
 require 'rect'
-require 'circle'
 
 
 
